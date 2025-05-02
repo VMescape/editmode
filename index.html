@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EditMode</title>
+    <style>
+        /* Base styles */
+        :root {
+            --primary-color: #2b579a;
+            --toolbar-bg: #f3f2f1;
+            --border-color: #e1dfdd;
+            --hover-bg: #edebe9;
+            --active-bg: #e1dfdd;
+            --text-color: #323130;
+            --button-text: #616161;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --editor-bg: white;
+        }
+
+        :root[data-theme="dark"] {
+            --primary-color: #4b9cff;
+            --toolbar-bg: #1f1f1f;
+            --border-color: #404040;
+            --hover-bg: #2d2d2d;
+            --active-bg: #404040;
+            --text-color: #ffffff;
+            --button-text: #d0d0d0;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --editor-bg: #2d2d2d;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: var(--text-color);
+            background-color: var(--toolbar-bg);
+        }
+
+        /* Layout components */
+        #file-bar {
+            height: 32px;
+            background-color: var(--toolbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: stretch;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        #toolbar {
+            max-width: 816px;
+            margin: 20px auto 0;
+            padding: 8px 16px;
+            background-color: var(--editor-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            position: sticky;
+            top: 40px;
+            z-index: 99;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        /* Toolbar components */
+        .toolbar-group {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 0 8px;
+        }
+
+        .toolbar-button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            color: var(--button-text);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+            min-width: 32px;
+            justify-content: center;
+            position: relative;
+        }
+
+        .toolbar-button:active {
+            background: var(--active-bg);
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            height: 24px;
+            background: var(--border-color);
+            margin: 0 4px;
+        }
+
+        /* Dropdown and menu components */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--editor-bg);
+            min-width: 200px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: none;
+            z-index: 1000;
+            margin-top: 4px;
+            padding: 4px 0;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-color);
+            font-size: 13px;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .menu-item:hover {
+            color: var(--primary-color);
+        }
+
+        .menu-item:active {
+            background: var(--active-bg);
+        }
+
+        .menu-separator {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 0;
+        }
+
+        /* File tab specific styles */
+        .file-tab {
+            padding: 0 16px;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-size: 13px;
+            border: none;
+            border-right: 1px solid var(--border-color);
+            position: relative;
+            height: 100%;
+            transition: background-color 0.2s ease;
+        }
+
+        .file-tab:hover {
+            background-color: var(--hover-bg);
+        }
+
+        /* Select button styles */
+        select.toolbar-button {
+            padding: 6px 28px 6px 12px;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23616161%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 8px;
+            color: var(--button-text);
+        }
+
+        :root[data-theme="dark"] select.toolbar-button {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23d0d0d0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        }
+
+        select.toolbar-button:hover {
+            background-color: var(--hover-bg);
+        }
+
+        /* Editor styles */
+        #editor {
+            padding: 20px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            background-color: var(--toolbar-bg);
+        }
+
+        .editor-content {
+            max-width: 816px;
+            margin: 0 auto;
+            background: var(--editor-bg);
+            padding: 72px 72px;
+            min-height: 1056px;
+            box-shadow: 0 2px 6px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            outline: none;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: var(--text-color);
+        }
+
+        /* Icon styles */
+        .toolbar-button[onclick*="bold"]::before {
+            content: "B";
+            font-weight: bold;
+        }
+
+        .toolbar-button[onclick*="italic"]::before {
+            content: "I";
+            font-style: italic;
+        }
+
+        .toolbar-button[onclick*="underline"]::before {
+            content: "U";
+            text-decoration: underline;
+        }
+
+        .toolbar-button[onclick*="justify"]::before {
+            content: "≡";
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="file-bar">
+        <div class="file-tab" onclick="toggleFileMenu()">
+            <span>File</span>
+            <div id="fileMenu" class="dropdown-menu">
+                <button class="menu-item" onclick="newDocument()">
+                    <span>New</span>
+                </button>
+                <button class="menu-item" onclick="openFile()">
+                    <span>Open...</span>
+                </button>
+                <button class="menu-item" onclick="saveDocument('docx')">
+                    <span>Save</span>
+                </button>
+                <div class="menu-separator"></div>
+                <button class="menu-item" onclick="saveDocument('docx')">
+                    <span>Save as DOCX</span>
+                </button>
+                <button class="menu-item" onclick="saveDocument('pdf')">
+                    <span>Export as PDF</span>
+                </button>
+                <button class="menu-item" onclick="saveDocument('html')">
+                    <span>Export as HTML</span>
+                </button>
+            </div>
+        </div>
+        <div class="file-tab" onclick="toggleStyleMenu()">
+            <span>Style</span>
+            <div id="styleMenu" class="dropdown-menu">
+                <button class="menu-item" onclick="setTheme('light')">
+                    <span>Light Theme</span>
+                </button>
+                <button class="menu-item" onclick="setTheme('dark')">
+                    <span>Dark Theme</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="toolbar">
+        <div class="toolbar-group">
+            <button class="toolbar-button" onclick="formatDoc('bold')" title="Bold"></button>
+            <button class="toolbar-button" onclick="formatDoc('italic')" title="Italic"></button>
+            <button class="toolbar-button" onclick="formatDoc('underline')" title="Underline"></button>
+        </div>
+        <div class="toolbar-separator"></div>
+        <div class="toolbar-group">
+            <select class="toolbar-button" onchange="formatDoc('fontSize', this.value)" title="Font Size">
+                <option value="3">Normal</option>
+                <option value="5">Large</option>
+                <option value="7">Huge</option>
+            </select>
+        </div>
+        <div class="toolbar-separator"></div>
+        <div class="toolbar-group">
+            <button class="toolbar-button" onclick="formatDoc('justifyLeft')" title="Align Left"></button>
+            <button class="toolbar-button" onclick="formatDoc('justifyCenter')" title="Center"></button>
+            <button class="toolbar-button" onclick="formatDoc('justifyRight')" title="Align Right"></button>
+        </div>
+    </div>
+    <div id="editor">
+        <div class="editor-content" contenteditable="true"></div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const mammoth = require('mammoth');
+
+        function formatDoc(command, value = null) {
+            document.execCommand(command, false, value);
+        }
+
+        function toggleFileMenu() {
+            document.getElementById("fileMenu").classList.toggle("show");
+            document.getElementById("styleMenu").classList.remove("show");
+        }
+
+        function toggleStyleMenu() {
+            document.getElementById("styleMenu").classList.toggle("show");
+            document.getElementById("fileMenu").classList.remove("show");
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            document.getElementById("styleMenu").classList.remove("show");
+        }
+
+        // Initialize theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+
+        function newDocument() {
+            if (confirm('Are you sure you want to create a new document? Any unsaved changes will be lost.')) {
+                document.querySelector('.editor-content').innerHTML = '';
+                document.querySelector('.editor-content').focus();
+            }
+        }
+
+        function openFile() {
+            ipcRenderer.send('open-file-dialog');
+        }
+
+        // Close dropdowns when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.file-tab')) {
+                const menus = document.getElementsByClassName("dropdown-menu");
+                for (const menu of menus) {
+                    if (menu.classList.contains('show')) {
+                        menu.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        function saveDocument(format) {
+            const content = document.querySelector('.editor-content').innerHTML;
+            ipcRenderer.send('save-file', { content, format });
+        }
+
+        ipcRenderer.on('file-opened', async (event, filePath) => {
+            try {
+                const result = await mammoth.convertToHtml({ path: filePath });
+                document.querySelector('.editor-content').innerHTML = result.value;
+            } catch (error) {
+                console.error('Error opening file:', error);
+            }
+        });
+
+        ipcRenderer.on('save-complete', (event, success) => {
+            if (success) {
+                alert('File saved successfully!');
+            } else {
+                alert('Error saving file. Please try again.');
+            }
+        });
+
+        // Initialize editor
+        document.querySelector('.editor-content').focus();
+    </script>
+</body>
+</html> 

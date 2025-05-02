@@ -17,7 +17,8 @@ function createWindow() {
     },
     title: 'EditMode',
     icon: path.join(__dirname, 'icon.png'),
-    show: false
+    show: false,
+    autoHideMenuBar: true
   });
 
   mainWindow.loadFile('index.html');

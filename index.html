@@ -14,6 +14,10 @@
             --button-text: #616161;
             --shadow-color: rgba(0, 0, 0, 0.1);
             --editor-bg: white;
+            --border-radius-sm: 6px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --transition-speed: 0.2s;
         }
 
         :root[data-theme="dark"] {
@@ -26,6 +30,131 @@
             --button-text: #d0d0d0;
             --shadow-color: rgba(0, 0, 0, 0.3);
             --editor-bg: #2d2d2d;
+        }
+
+        :root[data-theme="hacker"] {
+            --primary-color: #00ff00;
+            --toolbar-bg: #0a0a0a;
+            --border-color: #00ff00;
+            --hover-bg: #1a1a1a;
+            --active-bg: #2a2a2a;
+            --text-color: #00ff00;
+            --button-text: #00cc00;
+            --shadow-color: rgba(0, 255, 0, 0.2);
+            --editor-bg: #000000;
+        }
+
+        :root[data-theme="kawaii"] {
+            --primary-color: #ff8dc7;
+            --toolbar-bg: #fff0f7;
+            --border-color: #ffcce6;
+            --hover-bg: #ffe6f2;
+            --active-bg: #ffd9ec;
+            --text-color: #8f5c7c;
+            --button-text: #b771a2;
+            --shadow-color: rgba(255, 141, 199, 0.2);
+            --editor-bg: #ffffff;
+        }
+
+        /* Shared styles for all themes */
+        .toolbar-button,
+        .menu-item,
+        .file-tab,
+        .view-mode-switch {
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .toolbar-button:hover,
+        .menu-item:hover {
+            transform: scale(1.05);
+        }
+
+        .spreadsheet-cell {
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .spreadsheet-cell:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .column-header,
+        .row-header,
+        .corner-cell {
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        #toolbar {
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        .dropdown-menu {
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 8px 24px var(--shadow-color);
+            border: 2px solid var(--border-color);
+            padding: 8px;
+        }
+
+        .toolbar-separator {
+            border-radius: 4px;
+        }
+
+        .view-mode-switch::before {
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 2px 6px var(--shadow-color);
+        }
+
+        /* Theme-specific styles */
+        :root[data-theme="dark"] .spreadsheet-cell:hover {
+            background-color: var(--hover-bg);
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        :root[data-theme="hacker"] .spreadsheet-cell,
+        :root[data-theme="hacker"] .editor-content[contenteditable="true"] {
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        :root[data-theme="hacker"] .spreadsheet-cell:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 12px rgba(0, 255, 0, 0.3);
+        }
+
+        :root[data-theme="hacker"] .column-header,
+        :root[data-theme="hacker"] .row-header,
+        :root[data-theme="hacker"] .corner-cell {
+            background-color: #0a0a0a;
+            border-color: #00ff00;
+            color: #00ff00;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.2);
+        }
+
+        :root[data-theme="hacker"] .toolbar-separator {
+            background: linear-gradient(to bottom, #003300, #00ff00);
+        }
+
+        :root[data-theme="hacker"] #toolbar,
+        :root[data-theme="hacker"] .dropdown-menu {
+            box-shadow: 0 4px 16px rgba(0, 255, 0, 0.2);
+        }
+
+        :root[data-theme="kawaii"] .spreadsheet-cell,
+        :root[data-theme="kawaii"] .editor-content[contenteditable="true"] {
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+        }
+
+        :root[data-theme="kawaii"] .spreadsheet-cell:hover {
+            background-color: var(--hover-bg);
+        }
+
+        :root[data-theme="kawaii"] .toolbar-separator {
+            background: linear-gradient(to bottom, var(--border-color), var(--primary-color));
         }
 
         body {
@@ -97,7 +226,7 @@
             width: 1px;
             height: 24px;
             background: var(--border-color);
-            margin: 0 4px;
+            margin: 0 8px;
         }
 
         /* Dropdown and menu components */
@@ -163,15 +292,23 @@
             align-items: center;
             color: var(--text-color);
             font-size: 13px;
-            border: none;
-            border-right: 1px solid var(--border-color);
             position: relative;
             height: 100%;
-            transition: background-color 0.2s ease;
+            transition: background-color var(--transition-speed) ease;
         }
 
         .file-tab:hover {
             background-color: var(--hover-bg);
+        }
+
+        .file-tab span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Remove the existing border-right from .file-tab */
+        .file-tab + .file-tab {
+            margin-left: 4px;
         }
 
         /* Select button styles */
@@ -201,6 +338,10 @@
             background-color: var(--toolbar-bg);
         }
 
+        #editor:has(.spreadsheet-view) {
+            overflow: hidden;
+        }
+
         .editor-content {
             max-width: 816px;
             margin: 0 auto;
@@ -208,11 +349,16 @@
             padding: 72px 72px;
             min-height: 1056px;
             box-shadow: 0 2px 6px var(--shadow-color);
-            border: 1px solid var(--border-color);
             outline: none;
             font-size: 11pt;
             line-height: 1.5;
             color: var(--text-color);
+        }
+
+        .editor-content.spreadsheet-view {
+            max-width: none;
+            padding: 0;
+            min-height: auto;
         }
 
         /* Icon styles */
@@ -235,6 +381,237 @@
             content: "≡";
             font-size: 16px;
         }
+
+        /* Add these styles */
+        .view-mode-switch {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 2px;
+            border-radius: 4px;
+            background: var(--hover-bg);
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            width: 100px;
+            height: 24px;
+        }
+
+        .view-mode-switch::before {
+            content: "";
+            position: absolute;
+            width: 50px;
+            height: 20px;
+            background: var(--editor-bg);
+            border-radius: 2px;
+            left: 2px;
+            transition: transform 0.2s ease;
+            transform: translateX(var(--slide-pos, 0));
+            border: 1px solid var(--border-color);
+        }
+
+        .view-mode-switch.spreadsheet-mode::before {
+            --slide-pos: 46px;
+        }
+
+        .view-mode-switch span {
+            flex: 1;
+            text-align: center;
+            font-size: 12px;
+            color: var(--button-text);
+            position: relative;
+            z-index: 1;
+            text-transform: lowercase;
+            font-weight: 500;
+        }
+
+        .view-mode-switch.spreadsheet-mode .spreadsheet-label,
+        .view-mode-switch:not(.spreadsheet-mode) .doc-label {
+            color: var(--primary-color);
+        }
+
+        /* Update toolbar separator margin */
+        .toolbar-separator {
+            margin: 0 8px;
+        }
+
+        /* Spreadsheet styles */
+        .spreadsheet-wrapper {
+            overflow: auto;
+            width: 100%;
+            height: calc(100vh - 180px);
+            padding-bottom: 0;
+        }
+
+        .spreadsheet-table {
+            border-collapse: collapse;
+            width: auto;
+            min-width: 100%;
+            font-size: 11pt;
+            font-family: Calibri, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--editor-bg);
+        }
+
+        .spreadsheet-cell {
+            border: 1px solid var(--border-color);
+            padding: 2px 4px;
+            min-width: 80px;
+            height: 20px;
+            box-sizing: border-box;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background: var(--editor-bg);
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .spreadsheet-cell:hover {
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .column-header {
+            background-color: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            padding: 2px 4px;
+            min-width: 80px;
+            height: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            font-weight: normal;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            font-size: 11pt;
+        }
+
+        .row-header {
+            background-color: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            padding: 2px 4px;
+            min-width: 40px;
+            width: 40px;
+            height: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            font-weight: normal;
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            font-size: 11pt;
+        }
+
+        .corner-cell {
+            background-color: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            min-width: 40px;
+            width: 40px;
+            height: 20px;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            padding: 2px 4px;
+            text-align: center;
+            font-weight: normal;
+            font-size: 11pt;
+            vertical-align: middle;
+        }
+
+        .editor-content.spreadsheet-view {
+            padding: 0;
+            max-width: none;
+        }
+
+        /* Add kawaii theme specific styles */
+        :root[data-theme="kawaii"] .toolbar-button,
+        :root[data-theme="kawaii"] .menu-item,
+        :root[data-theme="kawaii"] .file-tab,
+        :root[data-theme="kawaii"] .view-mode-switch {
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        :root[data-theme="kawaii"] .toolbar-button:hover,
+        :root[data-theme="kawaii"] .menu-item:hover {
+            background-color: var(--hover-bg);
+            transform: scale(1.05);
+        }
+
+        :root[data-theme="kawaii"] .spreadsheet-cell,
+        :root[data-theme="kawaii"] .editor-content[contenteditable="true"] {
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        :root[data-theme="kawaii"] .spreadsheet-cell:hover {
+            background-color: var(--hover-bg);
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        :root[data-theme="kawaii"] .column-header,
+        :root[data-theme="kawaii"] .row-header,
+        :root[data-theme="kawaii"] .corner-cell {
+            background-color: var(--toolbar-bg);
+            border-color: var(--border-color);
+            color: var(--text-color);
+            font-weight: bold;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        :root[data-theme="kawaii"] #toolbar {
+            border-radius: 16px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        :root[data-theme="kawaii"] .dropdown-menu {
+            border-radius: 16px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            border: 2px solid var(--border-color);
+            padding: 8px;
+        }
+
+        :root[data-theme="kawaii"] .toolbar-separator {
+            background: linear-gradient(to bottom, var(--border-color), var(--primary-color));
+            border-radius: 4px;
+            width: 2px;
+        }
+
+        :root[data-theme="kawaii"] .view-mode-switch::before {
+            border-radius: 10px;
+            box-shadow: 0 2px 6px var(--shadow-color);
+        }
+
+        :root[data-theme="kawaii"] .editor-content {
+            border-radius: 20px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+        }
+
+        /* Theme-specific corner cell styles */
+        :root[data-theme="dark"] .corner-cell {
+            background-color: var(--hover-bg);
+            border: 1px solid var(--border-color);
+        }
+
+        :root[data-theme="hacker"] .corner-cell {
+            background-color: #0a0a0a;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        :root[data-theme="kawaii"] .corner-cell {
+            background-color: var(--toolbar-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-weight: bold;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -255,6 +632,9 @@
                 <button class="menu-item" onclick="saveDocument('docx')">
                     <span>Save as DOCX</span>
                 </button>
+                <button class="menu-item" onclick="saveDocument('xlsx')">
+                    <span>Save as XLSX</span>
+                </button>
                 <button class="menu-item" onclick="saveDocument('pdf')">
                     <span>Export as PDF</span>
                 </button>
@@ -271,6 +651,12 @@
                 </button>
                 <button class="menu-item" onclick="setTheme('dark')">
                     <span>Dark Theme</span>
+                </button>
+                <button class="menu-item" onclick="setTheme('hacker')">
+                    <span>Hacker Terminal</span>
+                </button>
+                <button class="menu-item" onclick="setTheme('kawaii')">
+                    <span>Kawaii</span>
                 </button>
             </div>
         </div>
@@ -295,6 +681,13 @@
             <button class="toolbar-button" onclick="formatDoc('justifyCenter')" title="Center"></button>
             <button class="toolbar-button" onclick="formatDoc('justifyRight')" title="Align Right"></button>
         </div>
+        <div class="toolbar-separator"></div>
+        <div class="toolbar-group">
+            <div class="view-mode-switch" onclick="toggleViewMode()">
+                <span class="doc-label">docx</span>
+                <span class="spreadsheet-label">xlsx</span>
+            </div>
+        </div>
     </div>
     <div id="editor">
         <div class="editor-content" contenteditable="true"></div>
@@ -303,6 +696,7 @@
     <script>
         const { ipcRenderer } = require('electron');
         const mammoth = require('mammoth');
+        const XLSX = require('xlsx');
 
         function formatDoc(command, value = null) {
             document.execCommand(command, false, value);
@@ -330,8 +724,13 @@
 
         function newDocument() {
             if (confirm('Are you sure you want to create a new document? Any unsaved changes will be lost.')) {
-                document.querySelector('.editor-content').innerHTML = '';
-                document.querySelector('.editor-content').focus();
+                const editorContent = document.querySelector('.editor-content');
+                window.currentWorkbook = null;
+                window.currentHtmlContent = null;
+                editorContent.innerHTML = '';
+                editorContent.classList.remove('spreadsheet-view');
+                document.querySelector('.view-mode-switch').classList.remove('spreadsheet-mode');
+                editorContent.focus();
             }
         }
 
@@ -356,12 +755,213 @@
             ipcRenderer.send('save-file', { content, format });
         }
 
+        function isSpreadsheet(filePath) {
+            return filePath.toLowerCase().endsWith('.xlsx') || filePath.toLowerCase().endsWith('.xls');
+        }
+
+        function renderSpreadsheet(workbook) {
+            let firstSheet;
+            let range;
+            
+            if (workbook) {
+                firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                range = XLSX.utils.decode_range(firstSheet['!ref'] || 'A1:Z100');
+            } else {
+                // Default range for empty spreadsheet - show at least 100 rows and 26 columns (A-Z)
+                range = {
+                    s: { r: 0, c: 0 },
+                    e: { r: 99, c: 25 } // A1:Z100
+                };
+            }
+            
+            const maxCol = range.e.c;
+            let actualMaxRow = range.e.r;
+            
+            // If we have data, find the actual last row with content
+            if (firstSheet) {
+                actualMaxRow = 0;
+                for (let r = range.s.r; r <= range.e.r; r++) {
+                    let rowHasContent = false;
+                    for (let c = 0; c <= maxCol; c++) {
+                        const cellRef = XLSX.utils.encode_cell({r: r, c: c});
+                        if (firstSheet[cellRef]) {
+                            rowHasContent = true;
+                            break;
+                        }
+                    }
+                    if (rowHasContent) {
+                        actualMaxRow = r;
+                    }
+                }
+                // Always show at least 100 rows or the content, whichever is greater
+                actualMaxRow = Math.max(actualMaxRow, 99);
+            }
+            
+            // Create a wrapper div for the spreadsheet
+            const wrapper = document.createElement('div');
+            wrapper.className = 'spreadsheet-wrapper';
+            
+            const table = document.createElement('table');
+            table.className = 'spreadsheet-table';
+            
+            // Create column header row
+            const colHeaderRow = document.createElement('tr');
+            colHeaderRow.innerHTML = '<th class="corner-cell"></th>'; // Empty corner cell
+            
+            // Add column headers (A, B, C, etc.)
+            for (let i = 0; i <= maxCol; i++) {
+                const th = document.createElement('th');
+                th.textContent = XLSX.utils.encode_col(i);
+                th.className = 'column-header';
+                colHeaderRow.appendChild(th);
+            }
+            table.appendChild(colHeaderRow);
+            
+            // Create data rows
+            for (let r = range.s.r; r <= actualMaxRow; r++) {
+                const row = document.createElement('tr');
+                
+                // Add row number
+                const rowHeader = document.createElement('td');
+                rowHeader.className = 'row-header';
+                rowHeader.textContent = (r + 1).toString();
+                row.appendChild(rowHeader);
+                
+                // Add cells
+                for (let c = 0; c <= maxCol; c++) {
+                    const cell = document.createElement('td');
+                    cell.className = 'spreadsheet-cell';
+                    
+                    if (firstSheet) {
+                        const cellRef = XLSX.utils.encode_cell({r: r, c: c});
+                        const cellData = firstSheet[cellRef];
+                        
+                        if (cellData) {
+                            // Apply cell value
+                            if (cellData.w !== undefined) {
+                                cell.textContent = cellData.w;
+                            } else if (cellData.v !== undefined) {
+                                cell.textContent = cellData.v;
+                            }
+                            
+                            // Apply styles if present
+                            if (cellData.s) {
+                                // Font styles
+                                if (cellData.s.font) {
+                                    if (cellData.s.font.bold) cell.style.fontWeight = 'bold';
+                                    if (cellData.s.font.italic) cell.style.fontStyle = 'italic';
+                                    if (cellData.s.font.underline) cell.style.textDecoration = 'underline';
+                                    if (cellData.s.font.name) cell.style.fontFamily = cellData.s.font.name;
+                                    if (cellData.s.font.sz) cell.style.fontSize = `${cellData.s.font.sz}pt`;
+                                    if (cellData.s.font.color && cellData.s.font.color.rgb) {
+                                        cell.style.color = `#${cellData.s.font.color.rgb}`;
+                                    }
+                                }
+                                
+                                // Fill/background
+                                if (cellData.s.fill && cellData.s.fill.fgColor && cellData.s.fill.fgColor.rgb) {
+                                    cell.style.backgroundColor = `#${cellData.s.fill.fgColor.rgb}`;
+                                }
+                                
+                                // Alignment
+                                if (cellData.s.alignment) {
+                                    if (cellData.s.alignment.horizontal) {
+                                        cell.style.textAlign = cellData.s.alignment.horizontal;
+                                    }
+                                    if (cellData.s.alignment.vertical) {
+                                        cell.style.verticalAlign = cellData.s.alignment.vertical;
+                                    }
+                                    if (cellData.s.alignment.wrapText) {
+                                        cell.style.whiteSpace = 'normal';
+                                    }
+                                }
+                                
+                                // Borders
+                                if (cellData.s.border) {
+                                    const borderStyles = ['top', 'right', 'bottom', 'left'];
+                                    borderStyles.forEach(side => {
+                                        if (cellData.s.border[side]) {
+                                            const border = cellData.s.border[side];
+                                            const style = border.style ? 
+                                                (border.style === 'thin' ? 'solid' : 
+                                                 border.style === 'medium' ? 'solid' :
+                                                 border.style === 'thick' ? 'solid' : 
+                                                 border.style) : 'solid';
+                                            const width = border.style === 'thin' ? '1px' : 
+                                                         border.style === 'medium' ? '2px' :
+                                                         border.style === 'thick' ? '3px' : '1px';
+                                            const color = border.color && border.color.rgb ? 
+                                                `#${border.color.rgb}` : 'var(--border-color)';
+                                            cell.style[`border${side.charAt(0).toUpperCase() + side.slice(1)}`] = 
+                                                `${width} ${style} ${color}`;
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    
+                    row.appendChild(cell);
+                }
+                
+                table.appendChild(row);
+            }
+            
+            wrapper.appendChild(table);
+            
+            // Add the table to the wrapper
+            document.querySelector('.editor-content').innerHTML = '';
+            document.querySelector('.editor-content').appendChild(wrapper);
+        }
+
+        function toggleViewMode() {
+            const editorContent = document.querySelector('.editor-content');
+            const viewSwitch = document.querySelector('.view-mode-switch');
+            const isSpreadsheetMode = !viewSwitch.classList.contains('spreadsheet-mode');
+            
+            viewSwitch.classList.toggle('spreadsheet-mode');
+            
+            if (isSpreadsheetMode) {
+                editorContent.classList.add('spreadsheet-view');
+                // Render empty spreadsheet if no workbook is loaded
+                renderSpreadsheet(window.currentWorkbook);
+            } else {
+                editorContent.classList.remove('spreadsheet-view');
+                // If we're switching to text mode and have HTML content stored, restore it
+                if (window.currentHtmlContent) {
+                    editorContent.innerHTML = window.currentHtmlContent;
+                } else {
+                    editorContent.innerHTML = '';
+                }
+            }
+        }
+
         ipcRenderer.on('file-opened', async (event, filePath) => {
             try {
-                const result = await mammoth.convertToHtml({ path: filePath });
-                document.querySelector('.editor-content').innerHTML = result.value;
+                // Clear any previous stored content
+                window.currentWorkbook = null;
+                window.currentHtmlContent = null;
+                
+                // Clear any previous view classes
+                const editorContent = document.querySelector('.editor-content');
+                const viewSwitch = document.querySelector('.view-mode-switch');
+                
+                if (isSpreadsheet(filePath)) {
+                    const workbook = XLSX.readFile(filePath);
+                    window.currentWorkbook = workbook; // Store the workbook
+                    viewSwitch.classList.add('spreadsheet-mode');
+                    editorContent.classList.add('spreadsheet-view');
+                    renderSpreadsheet(workbook);
+                } else {
+                    editorContent.classList.remove('spreadsheet-view');
+                    viewSwitch.classList.remove('spreadsheet-mode');
+                    const result = await mammoth.convertToHtml({ path: filePath });
+                    editorContent.innerHTML = result.value;
+                    window.currentHtmlContent = result.value;
+                }
             } catch (error) {
                 console.error('Error opening file:', error);
+                alert('Error opening file: ' + error.message);
             }
         });
 

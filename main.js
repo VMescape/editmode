@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const htmlDocx = require('html-docx-js');
 const pdf = require('html-pdf');
+const XLSX = require('xlsx');
 
 let mainWindow = null;
 let fileToOpen = null;
@@ -87,7 +88,11 @@ ipcMain.on('open-file-dialog', async (event) => {
   try {
     const { filePaths } = await dialog.showOpenDialog(mainWindow, {
       properties: ['openFile'],
-      filters: [{ name: 'Word Documents', extensions: ['docx'] }]
+      filters: [
+        { name: 'Documents', extensions: ['docx', 'xlsx', 'xls'] },
+        { name: 'Word Documents', extensions: ['docx'] },
+        { name: 'Excel Spreadsheets', extensions: ['xlsx', 'xls'] }
+      ]
     });
 
     if (filePaths?.[0]) {
@@ -148,6 +153,7 @@ async function saveFile(content, format) {
   try {
     const filters = {
       'docx': [{ name: 'Word Document', extensions: ['docx'] }],
+      'xlsx': [{ name: 'Excel Spreadsheet', extensions: ['xlsx'] }],
       'pdf': [{ name: 'PDF Document', extensions: ['pdf'] }],
       'html': [{ name: 'HTML Document', extensions: ['html'] }]
     };
@@ -162,6 +168,10 @@ async function saveFile(content, format) {
       case 'docx':
         const docx = htmlDocx.asBlob(content);
         fs.writeFileSync(filePath, Buffer.from(await docx.arrayBuffer()));
+        break;
+      case 'xlsx':
+        const workbook = XLSX.utils.table_to_book(document.querySelector('.editor-content table'));
+        XLSX.writeFile(workbook, filePath);
         break;
       case 'pdf':
         await generatePDF(content, filePath);

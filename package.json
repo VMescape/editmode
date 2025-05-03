@@ -16,7 +16,8 @@
     "html-pdf": "^3.0.1",
     "mammoth": "^1.6.0",
     "pizzip": "^3.1.4",
-    "puppeteer": "^24.7.2"
+    "puppeteer": "^24.7.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "electron": "^28.1.0",

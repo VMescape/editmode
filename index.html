@@ -59,15 +59,9 @@
         /* Shared styles for all themes */
         .toolbar-button,
         .menu-item,
-        .file-tab,
         .view-mode-switch {
             border-radius: var(--border-radius-md);
             transition: all var(--transition-speed) ease;
-        }
-
-        .toolbar-button:hover,
-        .menu-item:hover {
-            transform: scale(1.05);
         }
 
         .spreadsheet-cell {
@@ -76,27 +70,14 @@
         }
 
         .spreadsheet-cell:hover {
-            transform: scale(1.02);
-            box-shadow: 0 2px 8px var(--shadow-color);
+            background: 0 2px 8px var(--shadow-color);
         }
 
-        .column-header,
-        .row-header,
-        .corner-cell {
-            border-radius: var(--border-radius-sm);
-            box-shadow: 0 2px 4px var(--shadow-color);
-        }
-
-        #toolbar {
-            border-radius: var(--border-radius-lg);
-            box-shadow: 0 4px 12px var(--shadow-color);
-        }
-
-        .dropdown-menu {
+        .dropdown-menu { 
             border-radius: var(--border-radius-lg);
             box-shadow: 0 8px 24px var(--shadow-color);
             border: 2px solid var(--border-color);
-            padding: 8px;
+            padding: 8px; 
         }
 
         .toolbar-separator {
@@ -140,14 +121,6 @@
         }
 
         :root[data-theme="hacker"] #toolbar,
-        :root[data-theme="hacker"] .dropdown-menu {
-            box-shadow: 0 4px 16px rgba(0, 255, 0, 0.2);
-        }
-
-        :root[data-theme="kawaii"] .spreadsheet-cell,
-        :root[data-theme="kawaii"] .editor-content[contenteditable="true"] {
-            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
-        }
 
         :root[data-theme="kawaii"] .spreadsheet-cell:hover {
             background-color: var(--hover-bg);
@@ -183,8 +156,8 @@
             padding: 8px 16px;
             background-color: var(--editor-bg);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
             display: flex;
+            border-radius: 30px;
             gap: 8px;
             align-items: center;
             position: sticky;
@@ -529,20 +502,14 @@
         :root[data-theme="kawaii"] .toolbar-button,
         :root[data-theme="kawaii"] .menu-item,
         :root[data-theme="kawaii"] .file-tab,
-        :root[data-theme="kawaii"] .view-mode-switch {
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
 
         :root[data-theme="kawaii"] .toolbar-button:hover,
         :root[data-theme="kawaii"] .menu-item:hover {
-            background-color: var(--hover-bg);
             transform: scale(1.05);
         }
 
         :root[data-theme="kawaii"] .spreadsheet-cell,
         :root[data-theme="kawaii"] .editor-content[contenteditable="true"] {
-            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
             border-radius: 6px;
             transition: all 0.2s ease;
         }
@@ -569,12 +536,6 @@
             box-shadow: 0 4px 12px var(--shadow-color);
         }
 
-        :root[data-theme="kawaii"] .dropdown-menu {
-            border-radius: 16px;
-            box-shadow: 0 8px 24px var(--shadow-color);
-            border: 2px solid var(--border-color);
-            padding: 8px;
-        }
 
         :root[data-theme="kawaii"] .toolbar-separator {
             background: linear-gradient(to bottom, var(--border-color), var(--primary-color));
@@ -612,29 +573,81 @@
             font-weight: bold;
             border-radius: 8px;
         }
+
+        /* Add this to the style section */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: var(--editor-bg);
+            padding: 24px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .loading-text {
+            color: var(--text-color);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <div class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Generating PDF...</p>
+        </div>
+    </div>
     <div id="file-bar">
         <div class="file-tab" onclick="toggleFileMenu()">
             <span>File</span>
             <div id="fileMenu" class="dropdown-menu">
                 <button class="menu-item" onclick="newDocument()">
-                    <span>New</span>
+                    <span>New (⌘N)</span>
                 </button>
                 <button class="menu-item" onclick="openFile()">
-                    <span>Open...</span>
+                    <span>Open... (⌘O)</span>
                 </button>
                 <button class="menu-item" onclick="saveDocument('docx')">
-                    <span>Save</span>
+                    <span>Save (⌘S)</span>
                 </button>
                 <div class="menu-separator"></div>
-                <button class="menu-item" onclick="saveDocument('docx')">
+                <!-- <button class="menu-item" onclick="saveDocument('docx')">
                     <span>Save as DOCX</span>
                 </button>
                 <button class="menu-item" onclick="saveDocument('xlsx')">
                     <span>Save as XLSX</span>
-                </button>
+                </button> -->
                 <button class="menu-item" onclick="saveDocument('pdf')">
                     <span>Export as PDF</span>
                 </button>
@@ -647,13 +660,13 @@
             <span>Style</span>
             <div id="styleMenu" class="dropdown-menu">
                 <button class="menu-item" onclick="setTheme('light')">
-                    <span>Light Theme</span>
+                    <span>Light </span>
                 </button>
                 <button class="menu-item" onclick="setTheme('dark')">
-                    <span>Dark Theme</span>
+                    <span>Dark </span>
                 </button>
                 <button class="menu-item" onclick="setTheme('hacker')">
-                    <span>Hacker Terminal</span>
+                    <span>Hacker </span>
                 </button>
                 <button class="menu-item" onclick="setTheme('kawaii')">
                     <span>Kawaii</span>
@@ -671,8 +684,8 @@
         <div class="toolbar-group">
             <select class="toolbar-button" onchange="formatDoc('fontSize', this.value)" title="Font Size">
                 <option value="3">Normal</option>
-                <option value="5">Large</option>
-                <option value="7">Huge</option>
+                <option value="5">Sub-title</option>
+                <option value="7">Title</option>
             </select>
         </div>
         <div class="toolbar-separator"></div>
@@ -750,9 +763,152 @@
             }
         }
 
+        function parseContentForDocx(content) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+
+            function convertNodeToDocx(node) {
+                const result = {
+                    type: 'text',
+                    text: '',
+                    bold: false,
+                    italic: false,
+                    underline: false,
+                    children: []
+                };
+                
+                // Process text nodes
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.textContent.trim();
+                    if (text) {
+                        result.text = text;
+                    }
+                    return result;
+                }
+
+                // Process element nodes
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    const style = window.getComputedStyle(node);
+                    
+                    // Apply formatting based on HTML elements and styles
+                    if (node.tagName === 'B' || node.tagName === 'STRONG' || style.fontWeight === 'bold') {
+                        result.bold = true;
+                    }
+                    if (node.tagName === 'I' || node.tagName === 'EM' || style.fontStyle === 'italic') {
+                        result.italic = true;
+                    }
+                    if (node.tagName === 'U' || style.textDecoration === 'underline') {
+                        result.underline = true;
+                    }
+
+                    // Process child nodes
+                    Array.from(node.childNodes).forEach(childNode => {
+                        const childResult = convertNodeToDocx(childNode);
+                        if (childResult.text || childResult.children.length > 0) {
+                            result.children.push(childResult);
+                        }
+                    });
+
+                    // Handle block elements
+                    if (['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(node.tagName)) {
+                        return {
+                            type: 'paragraph',
+                            children: result.children
+                        };
+                    }
+
+                    return result;
+                }
+
+                return result;
+            }
+
+            return convertNodeToDocx(tempDiv);
+        }
+
         function saveDocument(format) {
-            const content = document.querySelector('.editor-content').innerHTML;
-            ipcRenderer.send('save-file', { content, format });
+            const editorContent = document.querySelector('.editor-content');
+            const isSpreadsheetMode = document.querySelector('.view-mode-switch').classList.contains('spreadsheet-mode');
+            
+            // Show loading overlay for PDF generation
+            if (format === 'pdf') {
+                document.querySelector('.loading-overlay').classList.add('show');
+            }
+            
+            if (isSpreadsheetMode) {
+                // Get the table data from the current view
+                const table = editorContent.querySelector('.spreadsheet-table');
+                if (!table) {
+                    alert('No spreadsheet data to save');
+                    return;
+                }
+                
+                // Convert table to worksheet data
+                const data = [];
+                const rows = table.querySelectorAll('tr');
+                
+                // Skip the first row (header row) and process the rest
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    const rowData = [];
+                    const cells = row.querySelectorAll('td');
+                    
+                    // Skip the first cell (row number) and process the rest
+                    for (let j = 1; j < cells.length; j++) {
+                        const cell = cells[j];
+                        // Only add the cell content if it's not a header cell
+                        if (!cell.classList.contains('column-header')) {
+                            rowData.push(cell.textContent);
+                        }
+                    }
+                    
+                    // Only add the row if it has any data
+                    if (rowData.some(cell => cell.trim() !== '')) {
+                        data.push(rowData);
+                    }
+                }
+
+                if (format === 'xlsx') {
+                    // Send the data to main process for XLSX
+                    ipcRenderer.send('save-file', { 
+                        content: data, 
+                        format: 'xlsx'
+                    });
+                } else if (format === 'pdf' || format === 'html') {
+                    // Create a clean table without headers for PDF/HTML export
+                    const cleanTable = document.createElement('table');
+                    cleanTable.className = 'spreadsheet-table';
+                    
+                    // Add data rows
+                    data.forEach(rowData => {
+                        const tr = document.createElement('tr');
+                        rowData.forEach(cellData => {
+                            const td = document.createElement('td');
+                            td.textContent = cellData;
+                            tr.appendChild(td);
+                        });
+                        cleanTable.appendChild(tr);
+                    });
+
+                    // Create a temporary container for the clean table
+                    const tempContainer = document.createElement('div');
+                    tempContainer.appendChild(cleanTable);
+                    
+                    // Send the clean HTML to main process
+                    ipcRenderer.send('save-file', { 
+                        content: tempContainer.innerHTML, 
+                        format 
+                    });
+                }
+            } else {
+                // Handle document mode (DOCX, PDF, HTML)
+                if (format === 'docx') {
+                    const parsedContent = parseContentForDocx(editorContent.innerHTML);
+                    ipcRenderer.send('save-file', { content: parsedContent, format });
+                } else {
+                    ipcRenderer.send('save-file', { content: editorContent.innerHTML, format });
+                }
+            }
         }
 
         function isSpreadsheet(filePath) {
@@ -934,6 +1090,9 @@
                     editorContent.innerHTML = '';
                 }
             }
+            
+            // Update the save menu text when switching modes
+            updateSaveMenuText();
         }
 
         ipcRenderer.on('file-opened', async (event, filePath) => {
@@ -966,15 +1125,49 @@
         });
 
         ipcRenderer.on('save-complete', (event, success) => {
-            if (success) {
+            // Hide loading overlay
+            document.querySelector('.loading-overlay').classList.remove('show');
+            
+            // Only show alerts for actual save attempts (success will be true or false)
+            // We don't show anything for cancellation (when success is null)
+            if (success === true) {
                 alert('File saved successfully!');
-            } else {
+            } else if (success === false) {
                 alert('Error saving file. Please try again.');
             }
         });
 
-        // Initialize editor
-        document.querySelector('.editor-content').focus();
+        // Add this after the other ipcRenderer.on handlers
+        ipcRenderer.on('trigger-shortcut', (event, action) => {
+            switch (action) {
+                case 'save':
+                    // Check if we're in spreadsheet mode
+                    const isSpreadsheetMode = document.querySelector('.view-mode-switch').classList.contains('spreadsheet-mode');
+                    // Save with the appropriate format based on the current view mode
+                    saveDocument(isSpreadsheetMode ? 'xlsx' : 'docx');
+                    break;
+                case 'new':
+                    newDocument();
+                    break;
+                case 'open':
+                    openFile();
+                    break;
+            }
+        });
+
+        // Update the menu items to show the dynamic shortcut text
+        function updateSaveMenuText() {
+            const isSpreadsheetMode = document.querySelector('.view-mode-switch').classList.contains('spreadsheet-mode');
+            const format = isSpreadsheetMode ? 'XLSX' : 'DOCX';
+            document.querySelector('.menu-item[onclick="saveDocument(\'docx\')"] span').textContent = `Save as ${format} (⌘S)`;
+        }
+
+        // Call updateSaveMenuText when initializing
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSaveMenuText();
+            // Initialize editor
+            document.querySelector('.editor-content').focus();
+        });
     </script>
 </body>
 </html> 

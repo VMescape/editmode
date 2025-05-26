@@ -6,6 +6,10 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -28,10 +32,17 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libnss3-dev libatk-bridge2.0-dev libdrm2-dev libxcomposite-dev libxdamage-dev libxrandr-dev libgbm-dev libxss-dev libasound2-dev
-          sudo apt-get install -y libgtk-3-dev libxss1 libgconf-2-4 xvfb
+          sudo apt-get install -y libnss3-dev libatk-bridge2.0-dev libdrm-dev libxcomposite-dev libxdamage-dev libxrandr-dev libgbm-dev libxss1 libasound2-dev
+          sudo apt-get install -y libgtk-3-dev libgconf-2-4 xvfb
           # Install PhantomJS dependencies
           sudo apt-get install -y fontconfig libfreetype6 libfontconfig1
+
+      - name: Setup virtual display (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          sleep 3
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
@@ -45,21 +56,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          # Explicitly disable code signing for all platforms
+          CSC_LINK: ""
+          CSC_KEY_PASSWORD: ""
           WIN_CSC_LINK: ""
           WIN_CSC_KEY_PASSWORD: ""
           APPLE_ID: ""
           APPLE_ID_PASS: ""
-          CSC_LINK: ""
-          CSC_KEY_PASSWORD: ""
+          APPLE_APP_SPECIFIC_PASSWORD: ""
           PHANTOMJS_CDNURL: https://github.com/Medium/phantomjs/releases/download/v2.1.1
           # Use virtual display for Linux
           DISPLAY: ${{ matrix.os == 'ubuntu-latest' && ':99' || '' }}
-
-      - name: Setup virtual display (Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          export DISPLAY=:99
-          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          # Disable update checks and signing verification
+          ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
+          DEBUG: electron-builder
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -92,5 +102,6 @@ jobs:
             dist/**/*.deb
           draft: false
           prerelease: false
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

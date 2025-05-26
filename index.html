@@ -64,11 +64,6 @@
             transition: all var(--transition-speed) ease;
         }
 
-        .spreadsheet-cell {
-            border-radius: var(--border-radius-sm);
-            transition: all var(--transition-speed) ease;
-        }
-
         .spreadsheet-cell:hover {
             background: 0 2px 8px var(--shadow-color);
         }
@@ -142,16 +137,17 @@
         #file-bar {
             height: 32px;
             background-color: var(--toolbar-bg);
-            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: stretch;
             position: sticky;
             top: 0;
             z-index: 100;
+            padding: 0 12px;
+            gap: 2px;
         }
 
         #toolbar {
-            max-width: 816px;
+            width: fit-content;
             margin: 20px auto 0;
             padding: 8px 16px;
             background-color: var(--editor-bg);
@@ -267,21 +263,44 @@
             font-size: 13px;
             position: relative;
             height: 100%;
-            transition: background-color var(--transition-speed) ease;
+            transition: all var(--transition-speed) ease;
+            border-radius: 6px 6px 0 0;
+            margin-top: 4px;
         }
 
         .file-tab:hover {
             background-color: var(--hover-bg);
         }
 
+        .file-tab:active {
+            background-color: var(--active-bg);
+        }
+
+        .file-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: all var(--transition-speed) ease;
+            transform: translateX(-50%);
+        }
+
+        .file-tab:hover::after {
+            width: 80%;
+        }
+
         .file-tab span {
             position: relative;
             z-index: 1;
+            font-weight: 500;
         }
 
         /* Remove the existing border-right from .file-tab */
         .file-tab + .file-tab {
-            margin-left: 4px;
+            margin-left: 2px;
         }
 
         /* Select button styles */
@@ -414,12 +433,19 @@
             width: 100%;
             height: calc(100vh - 180px);
             padding-bottom: 0;
+            position: relative;
+        }
+
+        .spreadsheet-container {
+            transform-origin: 0 0;
+            min-width: fit-content;
+            display: inline-block;
         }
 
         .spreadsheet-table {
             border-collapse: collapse;
             width: auto;
-            min-width: 100%;
+            min-width: max-content;
             font-size: 11pt;
             font-family: Calibri, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: var(--editor-bg);
@@ -531,12 +557,6 @@
             box-shadow: 0 2px 4px var(--shadow-color);
         }
 
-        :root[data-theme="kawaii"] #toolbar {
-            border-radius: 16px;
-            box-shadow: 0 4px 12px var(--shadow-color);
-        }
-
-
         :root[data-theme="kawaii"] .toolbar-separator {
             background: linear-gradient(to bottom, var(--border-color), var(--primary-color));
             border-radius: 4px;
@@ -619,6 +639,177 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Update zoom control styles */
+        .zoom-controls {
+            display: none;
+        }
+        
+        .spreadsheet-mode .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;  /* Add consistent spacing */
+        }
+        
+        .zoom-slider {
+            width: 80px;  /* Reduced from 100px */
+            margin: 0;    /* Remove margins, use gap instead */
+            cursor: pointer;
+        }
+        
+        .zoom-level {
+            min-width: 42px;  /* Reduced from 48px */
+            text-align: right;
+            color: var(--button-text);
+            font-size: 13px;
+            padding-right: 8px;  /* Add padding instead of extra width */
+        }
+        
+        /* Make zoom buttons more compact */
+        .zoom-controls .toolbar-button {
+            padding: 4px 8px;  /* Reduced padding */
+            min-width: 24px;   /* Smaller minimum width */
+            font-weight: bold; /* Make +/- symbols bold */
+        }
+        
+        /* Style the range input for different browsers */
+        .zoom-slider {
+            -webkit-appearance: none;
+            height: 3px;  /* Slightly thinner bar */
+            border-radius: 2px;
+            background: var(--border-color);
+            outline: none;
+        }
+        
+        .zoom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;  /* Slightly smaller thumb */
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .zoom-slider::-moz-range-thumb {
+            width: 10px;  /* Slightly smaller thumb */
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        /* Update the toolbar separator for zoom controls */
+        .zoom-controls.toolbar-separator {
+            margin: 0 4px;  /* Reduced margin */
+            height: 20px;   /* Match the height of other items */
+        }
+
+        /* Color picker styles */
+        .color-picker-button {
+            width: 28px;
+            height: 28px;
+            padding: 3px !important;
+            position: relative;
+            border-radius: 4px;
+            background: transparent;
+        }
+
+        .color-picker-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .color-preview {
+            width: 22px;
+            height: 22px;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-preview:hover {
+            transform: scale(1.05);
+        }
+
+        .color-picker-popup {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: var(--editor-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            display: none;
+            z-index: 1000;
+            width: 220px;
+        }
+
+        .color-picker-popup.show {
+            display: block;
+        }
+
+        .preset-colors {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .preset-color {
+            width: 22px;
+            height: 22px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .preset-color:hover {
+            transform: scale(1.1);
+        }
+
+        .color-picker-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 8px 0;
+        }
+
+        .custom-color {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .custom-color input[type="color"] {
+            width: 100%;
+            height: 24px;
+            padding: 0;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .custom-color input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .custom-color input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 2px;
+        }
+
+        .custom-color input[type="color"]::-moz-color-swatch {
+            border: none;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
@@ -676,6 +867,46 @@
     </div>
     <div id="toolbar">
         <div class="toolbar-group">
+            <div class="color-picker-wrapper">
+                <div class="toolbar-button color-picker-button" onclick="toggleColorPicker(event)" title="Text Color">
+                    <div class="color-preview" id="currentColor"></div>
+                </div>
+                <div class="color-picker-popup" id="colorPickerPopup">
+                    <div class="preset-colors">
+                        <div class="preset-color" style="background: #000000" onclick="setTextColor('#000000')"></div>
+                        <div class="preset-color" style="background: #434343" onclick="setTextColor('#434343')"></div>
+                        <div class="preset-color" style="background: #666666" onclick="setTextColor('#666666')"></div>
+                        <div class="preset-color" style="background: #999999" onclick="setTextColor('#999999')"></div>
+                        <div class="preset-color" style="background: #b7b7b7" onclick="setTextColor('#b7b7b7')"></div>
+                        <div class="preset-color" style="background: #cccccc" onclick="setTextColor('#cccccc')"></div>
+                        <div class="preset-color" style="background: #d9d9d9" onclick="setTextColor('#d9d9d9')"></div>
+                        <div class="preset-color" style="background: #ffffff" onclick="setTextColor('#ffffff')"></div>
+                        <div class="preset-color" style="background: #980000" onclick="setTextColor('#980000')"></div>
+                        <div class="preset-color" style="background: #ff0000" onclick="setTextColor('#ff0000')"></div>
+                        <div class="preset-color" style="background: #ff9900" onclick="setTextColor('#ff9900')"></div>
+                        <div class="preset-color" style="background: #ffff00" onclick="setTextColor('#ffff00')"></div>
+                        <div class="preset-color" style="background: #00ff00" onclick="setTextColor('#00ff00')"></div>
+                        <div class="preset-color" style="background: #00ffff" onclick="setTextColor('#00ffff')"></div>
+                        <div class="preset-color" style="background: #4a86e8" onclick="setTextColor('#4a86e8')"></div>
+                        <div class="preset-color" style="background: #0000ff" onclick="setTextColor('#0000ff')"></div>
+                        <div class="preset-color" style="background: #9900ff" onclick="setTextColor('#9900ff')"></div>
+                        <div class="preset-color" style="background: #ff00ff" onclick="setTextColor('#ff00ff')"></div>
+                        <div class="preset-color" style="background: #e6b8af" onclick="setTextColor('#e6b8af')"></div>
+                        <div class="preset-color" style="background: #f4cccc" onclick="setTextColor('#f4cccc')"></div>
+                        <div class="preset-color" style="background: #fce5cd" onclick="setTextColor('#fce5cd')"></div>
+                        <div class="preset-color" style="background: #fff2cc" onclick="setTextColor('#fff2cc')"></div>
+                        <div class="preset-color" style="background: #d9ead3" onclick="setTextColor('#d9ead3')"></div>
+                        <div class="preset-color" style="background: #d0e0e3" onclick="setTextColor('#d0e0e3')"></div>
+                    </div>
+                    <div class="color-picker-divider"></div>
+                    <div class="custom-color">
+                        <input type="color" id="customColorPicker" onchange="setTextColor(this.value)" value="#000000">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-separator"></div>
+        <div class="toolbar-group">
             <button class="toolbar-button" onclick="formatDoc('bold')" title="Bold"></button>
             <button class="toolbar-button" onclick="formatDoc('italic')" title="Italic"></button>
             <button class="toolbar-button" onclick="formatDoc('underline')" title="Underline"></button>
@@ -700,6 +931,13 @@
                 <span class="doc-label">docx</span>
                 <span class="spreadsheet-label">xlsx</span>
             </div>
+        </div>
+        <div class="toolbar-separator zoom-controls"><!-- Only show for spreadsheet mode --></div>
+        <div class="toolbar-group zoom-controls"><!-- Only show for spreadsheet mode -->
+            <button class="toolbar-button" onclick="adjustZoom(-10)" title="Zoom Out">-</button>
+            <input type="range" min="50" max="200" value="100" class="zoom-slider" oninput="updateZoom(this.value)" title="Zoom Level">
+            <button class="toolbar-button" onclick="adjustZoom(10)" title="Zoom In">+</button>
+            <span class="zoom-level">100%</span>
         </div>
     </div>
     <div id="editor">
@@ -957,8 +1195,27 @@
             const wrapper = document.createElement('div');
             wrapper.className = 'spreadsheet-wrapper';
             
+            const container = document.createElement('div');
+            container.className = 'spreadsheet-container';
+            
             const table = document.createElement('table');
             table.className = 'spreadsheet-table';
+            
+            // Handle merged cells
+            const merges = firstSheet ? (firstSheet['!merges'] || []) : [];
+            const mergedCells = new Map();
+            merges.forEach(merge => {
+                for (let r = merge.s.r; r <= merge.e.r; r++) {
+                    for (let c = merge.s.c; c <= merge.e.c; c++) {
+                        const cellRef = XLSX.utils.encode_cell({r, c});
+                        mergedCells.set(cellRef, {
+                            master: XLSX.utils.encode_cell({r: merge.s.r, c: merge.s.c}),
+                            rowspan: merge.e.r - merge.s.r + 1,
+                            colspan: merge.e.c - merge.s.c + 1
+                        });
+                    }
+                }
+            });
             
             // Create column header row
             const colHeaderRow = document.createElement('tr');
@@ -985,15 +1242,28 @@
                 
                 // Add cells
                 for (let c = 0; c <= maxCol; c++) {
+                    const cellRef = XLSX.utils.encode_cell({r, c});
+                    const mergeInfo = mergedCells.get(cellRef);
+                    
+                    // Skip if this cell is part of a merge (except the master cell)
+                    if (mergeInfo && cellRef !== mergeInfo.master) {
+                        continue;
+                    }
+                    
                     const cell = document.createElement('td');
                     cell.className = 'spreadsheet-cell';
                     
+                    // Apply merge attributes if this is a master cell
+                    if (mergeInfo) {
+                        cell.rowSpan = mergeInfo.rowspan;
+                        cell.colSpan = mergeInfo.colspan;
+                    }
+                    
                     if (firstSheet) {
-                        const cellRef = XLSX.utils.encode_cell({r: r, c: c});
                         const cellData = firstSheet[cellRef];
                         
                         if (cellData) {
-                            // Apply cell value
+                            // Apply cell value with proper formatting
                             if (cellData.w !== undefined) {
                                 cell.textContent = cellData.w;
                             } else if (cellData.v !== undefined) {
@@ -1002,54 +1272,91 @@
                             
                             // Apply styles if present
                             if (cellData.s) {
-                                // Font styles
-                                if (cellData.s.font) {
-                                    if (cellData.s.font.bold) cell.style.fontWeight = 'bold';
-                                    if (cellData.s.font.italic) cell.style.fontStyle = 'italic';
-                                    if (cellData.s.font.underline) cell.style.textDecoration = 'underline';
-                                    if (cellData.s.font.name) cell.style.fontFamily = cellData.s.font.name;
-                                    if (cellData.s.font.sz) cell.style.fontSize = `${cellData.s.font.sz}pt`;
-                                    if (cellData.s.font.color && cellData.s.font.color.rgb) {
-                                        cell.style.color = `#${cellData.s.font.color.rgb}`;
+                                let style = {};
+                                // Parse the style if it's a string (from our debug output)
+                                if (typeof cellData.s === 'string') {
+                                    try {
+                                        style = JSON.parse(cellData.s);
+                                    } catch (e) {
+                                        console.error('Error parsing style:', e);
+                                    }
+                                } else {
+                                    style = cellData.s;
+                                }
+                                
+                                // Handle background/fill
+                                if (style.patternType === 'solid') {
+                                    // Handle foreground color
+                                    if (style.fgColor) {
+                                        if (style.fgColor.rgb) {
+                                            cell.style.backgroundColor = `#${style.fgColor.rgb}`;
+                                            // If background is dark, make text white by default unless specified
+                                            const rgb = parseInt(style.fgColor.rgb, 16);
+                                            const r = (rgb >> 16) & 0xff;
+                                            const g = (rgb >> 8) & 0xff;
+                                            const b = rgb & 0xff;
+                                            // Calculate luminance - if dark background, use white text by default
+                                            if ((r * 0.299 + g * 0.587 + b * 0.114) < 128) {
+                                                cell.style.color = '#FFFFFF';
+                                            }
+                                        } else if (style.fgColor.theme !== undefined) {
+                                            const themeColor = processExcelColor(style.fgColor);
+                                            if (themeColor) {
+                                                cell.style.backgroundColor = themeColor;
+                                            }
+                                        }
+                                    }
+                                    // If no fgColor but bgColor exists, use bgColor
+                                    else if (style.bgColor && style.bgColor.rgb) {
+                                        cell.style.backgroundColor = `#${style.bgColor.rgb}`;
                                     }
                                 }
                                 
-                                // Fill/background
-                                if (cellData.s.fill && cellData.s.fill.fgColor && cellData.s.fill.fgColor.rgb) {
-                                    cell.style.backgroundColor = `#${cellData.s.fill.fgColor.rgb}`;
+                                // Handle font styles - moved after background to override default color if specified
+                                if (style.font) {
+                                    if (style.font.bold) cell.style.fontWeight = 'bold';
+                                    if (style.font.italic) cell.style.fontStyle = 'italic';
+                                    if (style.font.underline) cell.style.textDecoration = 'underline';
+                                    if (style.font.name) cell.style.fontFamily = style.font.name;
+                                    if (style.font.sz) cell.style.fontSize = `${style.font.sz}pt`;
+                                    // Handle font color - this will override the default white text on dark background if specified
+                                    if (style.font.color) {
+                                        if (style.font.color.rgb) {
+                                            cell.style.color = `#${style.font.color.rgb}`;
+                                        } else if (style.font.color.theme !== undefined) {
+                                            const themeColor = processExcelColor(style.font.color);
+                                            if (themeColor) {
+                                                cell.style.color = themeColor;
+                                            }
+                                        } else if (style.font.color.indexed !== undefined) {
+                                            const indexedColor = processExcelColor(style.font.color);
+                                            if (indexedColor) {
+                                                cell.style.color = indexedColor;
+                                            }
+                                        }
+                                    }
                                 }
                                 
-                                // Alignment
-                                if (cellData.s.alignment) {
-                                    if (cellData.s.alignment.horizontal) {
-                                        cell.style.textAlign = cellData.s.alignment.horizontal;
-                                    }
-                                    if (cellData.s.alignment.vertical) {
-                                        cell.style.verticalAlign = cellData.s.alignment.vertical;
-                                    }
-                                    if (cellData.s.alignment.wrapText) {
+                                // Handle alignment
+                                if (style.alignment) {
+                                    if (style.alignment.horizontal) cell.style.textAlign = style.alignment.horizontal;
+                                    if (style.alignment.vertical) cell.style.verticalAlign = style.alignment.vertical;
+                                    if (style.alignment.wrapText) {
                                         cell.style.whiteSpace = 'normal';
+                                        cell.style.wordBreak = 'break-word';
                                     }
                                 }
                                 
-                                // Borders
-                                if (cellData.s.border) {
-                                    const borderStyles = ['top', 'right', 'bottom', 'left'];
-                                    borderStyles.forEach(side => {
-                                        if (cellData.s.border[side]) {
-                                            const border = cellData.s.border[side];
-                                            const style = border.style ? 
-                                                (border.style === 'thin' ? 'solid' : 
-                                                 border.style === 'medium' ? 'solid' :
-                                                 border.style === 'thick' ? 'solid' : 
-                                                 border.style) : 'solid';
-                                            const width = border.style === 'thin' ? '1px' : 
-                                                         border.style === 'medium' ? '2px' :
-                                                         border.style === 'thick' ? '3px' : '1px';
-                                            const color = border.color && border.color.rgb ? 
-                                                `#${border.color.rgb}` : 'var(--border-color)';
+                                // Handle borders
+                                if (style.border) {
+                                    ['top', 'right', 'bottom', 'left'].forEach(side => {
+                                        if (style.border[side] && style.border[side].style) {
+                                            const width = style.border[side].style === 'thick' ? '3px' :
+                                                        style.border[side].style === 'medium' ? '2px' : '1px';
+                                            const color = style.border[side].color ? 
+                                                processExcelColor(style.border[side].color) : '#000000';
                                             cell.style[`border${side.charAt(0).toUpperCase() + side.slice(1)}`] = 
-                                                `${width} ${style} ${color}`;
+                                                `${width} solid ${color}`;
                                         }
                                     });
                                 }
@@ -1063,27 +1370,59 @@
                 table.appendChild(row);
             }
             
-            wrapper.appendChild(table);
+            container.appendChild(table);
+            wrapper.appendChild(container);
             
-            // Add the table to the wrapper
+            // Add the wrapper to the editor
             document.querySelector('.editor-content').innerHTML = '';
             document.querySelector('.editor-content').appendChild(wrapper);
+            
+            // Apply zoom if it's not 100%
+            if (currentZoom !== 100) {
+                applyZoom();
+            }
         }
 
+        let currentZoom = 100;
+        
+        function updateZoom(value) {
+            currentZoom = parseInt(value);
+            applyZoom();
+            document.querySelector('.zoom-level').textContent = `${currentZoom}%`;
+        }
+        
+        function adjustZoom(delta) {
+            const slider = document.querySelector('.zoom-slider');
+            const newValue = Math.min(Math.max(parseInt(slider.value) + delta, 50), 200);
+            slider.value = newValue;
+            updateZoom(newValue);
+        }
+        
+        function applyZoom() {
+            const container = document.querySelector('.spreadsheet-container');
+            if (container) {
+                container.style.transform = `scale(${currentZoom / 100})`;
+                // No need to adjust wrapper dimensions anymore
+            }
+        }
+        
         function toggleViewMode() {
             const editorContent = document.querySelector('.editor-content');
             const viewSwitch = document.querySelector('.view-mode-switch');
             const isSpreadsheetMode = !viewSwitch.classList.contains('spreadsheet-mode');
             
             viewSwitch.classList.toggle('spreadsheet-mode');
+            document.getElementById('toolbar').classList.toggle('spreadsheet-mode', isSpreadsheetMode);
             
             if (isSpreadsheetMode) {
                 editorContent.classList.add('spreadsheet-view');
-                // Render empty spreadsheet if no workbook is loaded
                 renderSpreadsheet(window.currentWorkbook);
+                // Reset zoom when switching to spreadsheet mode
+                currentZoom = 100;
+                document.querySelector('.zoom-slider').value = 100;
+                document.querySelector('.zoom-level').textContent = '100%';
             } else {
                 editorContent.classList.remove('spreadsheet-view');
-                // If we're switching to text mode and have HTML content stored, restore it
                 if (window.currentHtmlContent) {
                     editorContent.innerHTML = window.currentHtmlContent;
                 } else {
@@ -1091,7 +1430,6 @@
                 }
             }
             
-            // Update the save menu text when switching modes
             updateSaveMenuText();
         }
 
@@ -1106,8 +1444,31 @@
                 const viewSwitch = document.querySelector('.view-mode-switch');
                 
                 if (isSpreadsheet(filePath)) {
-                    const workbook = XLSX.readFile(filePath);
-                    window.currentWorkbook = workbook; // Store the workbook
+                    // Load with full style options
+                    const workbook = XLSX.readFile(filePath, { 
+                        cellStyles: true,
+                        cellNF: true,
+                        cellDates: true,
+                        cellText: false
+                    });
+                    
+                    // Enhanced debugging
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    console.log('Sheet Name:', workbook.SheetNames[0]);
+                    console.log('Sheet Properties:', Object.keys(firstSheet).filter(k => k.startsWith('!')));
+                    
+                    // Log all cells with their styles
+                    Object.entries(firstSheet).forEach(([key, value]) => {
+                        if (!key.startsWith('!')) {
+                            console.log(`Cell ${key}:`, {
+                                value: value.v,
+                                style: value.s ? JSON.stringify(value.s, null, 2) : 'no style',
+                                format: value.z
+                            });
+                        }
+                    });
+                    
+                    window.currentWorkbook = workbook;
                     viewSwitch.classList.add('spreadsheet-mode');
                     editorContent.classList.add('spreadsheet-view');
                     renderSpreadsheet(workbook);
@@ -1167,6 +1528,136 @@
             updateSaveMenuText();
             // Initialize editor
             document.querySelector('.editor-content').focus();
+        });
+
+        // Add this helper function for color processing
+        function processExcelColor(color) {
+            if (!color) return null;
+            
+            // Handle RGB colors
+            if (color.rgb) {
+                let rgb = color.rgb;
+                // Handle both RGB and ARGB formats
+                if (rgb.length === 8) rgb = rgb.substring(2);
+                return `#${rgb}`;
+            }
+            
+            // Handle theme colors
+            if (color.theme !== undefined) {
+                const themeColors = {
+                    0: '#FFFFFF', // Background 1
+                    1: '#000000', // Text 1
+                    2: '#1F497D', // Background 2
+                    3: '#EEECE1', // Text 2
+                    4: '#4F81BD', // Accent 1
+                    5: '#C0504D', // Accent 2
+                    6: '#9BBB59', // Accent 3
+                    7: '#8064A2', // Accent 4
+                    8: '#4BACC6', // Accent 5
+                    9: '#F79646'  // Accent 6
+                };
+                
+                let themeColor = themeColors[color.theme] || '#000000';
+                
+                // Apply tint if present
+                if (color.tint) {
+                    // Convert hex to RGB
+                    let r = parseInt(themeColor.slice(1,3), 16);
+                    let g = parseInt(themeColor.slice(3,5), 16);
+                    let b = parseInt(themeColor.slice(5,7), 16);
+                    
+                    if (color.tint < 0) {
+                        // Darken
+                        r = Math.round(r * (1 + color.tint));
+                        g = Math.round(g * (1 + color.tint));
+                        b = Math.round(b * (1 + color.tint));
+                    } else {
+                        // Lighten
+                        r = Math.round(r + (255 - r) * color.tint);
+                        g = Math.round(g + (255 - g) * color.tint);
+                        b = Math.round(b + (255 - b) * color.tint);
+                    }
+                    
+                    themeColor = `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+                }
+                
+                return themeColor;
+            }
+            
+            // Handle indexed colors
+            if (color.indexed !== undefined) {
+                const indexedColors = [
+                    '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
+                    '#FFFF00', '#FF00FF', '#00FFFF', '#800000', '#008000',
+                    '#000080', '#808000', '#800080', '#008080', '#C0C0C0',
+                    '#808080', '#9999FF', '#993366', '#FFFFCC', '#CCFFFF'
+                ];
+                return indexedColors[color.indexed] || '#000000';
+            }
+            
+            return null;
+        }
+
+        // Add keyboard shortcuts for zooming
+        document.addEventListener('keydown', (e) => {
+            if (e.metaKey || e.ctrlKey) {  // Command/Control key
+                if (e.key === '=' || e.key === '+') {  // Zoom in
+                    e.preventDefault();
+                    adjustZoom(10);
+                } else if (e.key === '-') {  // Zoom out
+                    e.preventDefault();
+                    adjustZoom(-10);
+                } else if (e.key === '0') {  // Reset zoom
+                    e.preventDefault();
+                    updateZoom(100);
+                }
+            }
+        });
+
+        // Add these functions to your existing script section
+        function toggleColorPicker(event) {
+            event.stopPropagation();
+            const popup = document.getElementById('colorPickerPopup');
+            popup.classList.toggle('show');
+        }
+
+        function setTextColor(color) {
+            // Update the color preview and color picker
+            document.getElementById('currentColor').style.backgroundColor = color;
+            document.getElementById('customColorPicker').value = color;
+            
+            // Apply the color to selected text or set it as the current color
+            document.execCommand('foreColor', false, color);
+            
+            // Store the current color for new text
+            document.querySelector('.editor-content').style.color = color;
+            
+            // Don't hide the popup when using the color wheel
+            if (!event.target.matches('#customColorPicker')) {
+                document.getElementById('colorPickerPopup').classList.remove('show');
+            }
+        }
+
+        // Add this to ensure new text uses the selected color
+        document.querySelector('.editor-content').addEventListener('focus', function() {
+            const currentColor = document.getElementById('currentColor').style.backgroundColor;
+            if (currentColor) {
+                this.style.color = currentColor;
+            }
+        });
+
+        // Close color picker when clicking outside
+        document.addEventListener('click', function(event) {
+            const popup = document.getElementById('colorPickerPopup');
+            const colorPicker = document.querySelector('.color-picker-wrapper');
+            if (!colorPicker.contains(event.target)) {
+                popup.classList.remove('show');
+            }
+        });
+
+        // Initialize the current color preview
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('currentColor').style.backgroundColor = '#000000';
         });
     </script>
 </body>

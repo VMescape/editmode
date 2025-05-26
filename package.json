@@ -5,13 +5,19 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "dist": "electron-builder --publish=never",
+    "release": "electron-builder --publish=always"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "docx": "^9.4.1",
     "docxtemplater": "^3.42.4",
+    "electron-updater": "^6.6.2",
     "html-docx-js": "^0.3.1",
     "html-pdf": "^3.0.1",
     "mammoth": "^1.6.0",
@@ -26,16 +32,37 @@
   "build": {
     "appId": "com.editmode.app",
     "productName": "EditMode",
+    "directories": {
+      "output": "dist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "VMescape",
+        "repo": "editmode"
+      }
+    ],
     "mac": {
       "icon": "icon.png",
       "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
+      ],
       "extendInfo": {
         "CFBundleDocumentTypes": [
           {
             "CFBundleTypeExtensions": [
-              "docx"
+              "docx",
+              "xlsx"
             ],
-            "CFBundleTypeName": "Microsoft Word Document",
+            "CFBundleTypeName": "Microsoft Office Document",
             "CFBundleTypeRole": "Editor",
             "LSHandlerRank": "Alternate"
           }
@@ -45,14 +72,27 @@
     "win": {
       "icon": "icon.png",
       "target": [
-        "nsis"
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64", "ia32"]
+        }
       ]
     },
     "linux": {
       "icon": "icon.png",
       "target": [
-        "AppImage",
-        "deb"
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        }
       ]
     },
     "files": [

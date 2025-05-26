@@ -21,8 +21,8 @@
     "html-docx-js": "^0.3.1",
     "html-pdf": "^3.0.1",
     "mammoth": "^1.6.0",
+    "phantomjs-prebuilt": "^2.1.16",
     "pizzip": "^3.1.4",
-    "puppeteer": "^24.7.2",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -126,7 +126,8 @@
       "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
       "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
       "!**/{appveyor.yml,.travis.yml,circle.yml}",
-      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+      "!**/node_modules/puppeteer/**/*"
     ]
   }
 }

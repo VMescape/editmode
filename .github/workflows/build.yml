@@ -33,7 +33,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libnss3-dev libatk-bridge2.0-dev libdrm-dev libxcomposite-dev libxdamage-dev libxrandr-dev libgbm-dev libxss1 libasound2-dev
-          sudo apt-get install -y libgtk-3-dev libgconf-2-4 xvfb
+          sudo apt-get install -y libgtk-3-dev xvfb
           # Install PhantomJS dependencies
           sudo apt-get install -y fontconfig libfreetype6 libfontconfig1
 
@@ -69,6 +69,8 @@ jobs:
           DISPLAY: ${{ matrix.os == 'ubuntu-latest' && ':99' || '' }}
           # Disable update checks and signing verification
           ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
+          # Force disable code signing on Windows
+          ELECTRON_BUILDER_DISABLE_SIGNING: true
           DEBUG: electron-builder
 
       - name: Upload artifacts

@@ -1,6 +1,6 @@
 {
   "name": "editmode",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Modern document editor",
   "main": "main.js",
   "scripts": {
@@ -84,6 +84,8 @@
         }
       ],
       "sign": null,
+      "certificateFile": null,
+      "certificatePassword": null,
       "verifyUpdateCodeSignature": false,
       "requestedExecutionLevel": "asInvoker"
     },

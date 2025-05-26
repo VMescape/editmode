@@ -55,22 +55,13 @@ jobs:
         run: npm run build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Completely disable code signing
           CSC_IDENTITY_AUTO_DISCOVERY: false
-          # Explicitly disable code signing for all platforms
-          CSC_LINK: ""
-          CSC_KEY_PASSWORD: ""
-          WIN_CSC_LINK: ""
-          WIN_CSC_KEY_PASSWORD: ""
-          APPLE_ID: ""
-          APPLE_ID_PASS: ""
-          APPLE_APP_SPECIFIC_PASSWORD: ""
           PHANTOMJS_CDNURL: https://github.com/Medium/phantomjs/releases/download/v2.1.1
           # Use virtual display for Linux
           DISPLAY: ${{ matrix.os == 'ubuntu-latest' && ':99' || '' }}
           # Disable update checks and signing verification
           ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
-          # Force disable code signing on Windows
-          ELECTRON_BUILDER_DISABLE_SIGNING: true
 
       - name: Upload macOS artifacts
         if: matrix.os == 'macos-latest'

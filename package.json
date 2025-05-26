@@ -1,16 +1,16 @@
 {
   "name": "editmode",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Modern document editor",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
-    "build:mac": "electron-builder --mac",
-    "build:win": "electron-builder --win",
-    "build:linux": "electron-builder --linux",
-    "dist": "electron-builder --publish=never",
-    "release": "electron-builder --publish=always"
+    "build": "electron-builder --config electron-builder.yml",
+    "build:mac": "electron-builder --mac --config electron-builder.yml",
+    "build:win": "electron-builder --win --config electron-builder.yml",
+    "build:linux": "electron-builder --linux --config electron-builder.yml",
+    "dist": "electron-builder --publish=never --config electron-builder.yml",
+    "release": "electron-builder --publish=always --config electron-builder.yml"
   },
   "author": "VMescape",
   "license": "ISC",
@@ -27,88 +27,5 @@
   "devDependencies": {
     "electron": "^28.1.0",
     "electron-builder": "^24.9.1"
-  },
-  "build": {
-    "appId": "com.editmode.app",
-    "productName": "EditMode",
-    "directories": {
-      "output": "dist"
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "VMescape",
-        "repo": "editmode"
-      }
-    ],
-    "mac": {
-      "icon": "icon.png",
-      "category": "public.app-category.productivity",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": ["x64", "arm64"]
-        }
-      ],
-      "identity": null,
-      "hardenedRuntime": false,
-      "gatekeeperAssess": false,
-      "extendInfo": {
-        "CFBundleDocumentTypes": [
-          {
-            "CFBundleTypeExtensions": [
-              "docx",
-              "xlsx"
-            ],
-            "CFBundleTypeName": "Microsoft Office Document",
-            "CFBundleTypeRole": "Editor",
-            "LSHandlerRank": "Alternate"
-          }
-        ]
-      }
-    },
-    "win": {
-      "icon": "icon.png",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": ["x64"]
-        }
-      ],
-      "sign": false,
-      "certificateFile": null,
-      "certificatePassword": null,
-      "verifyUpdateCodeSignature": false,
-      "requestedExecutionLevel": "asInvoker"
-    },
-    "linux": {
-      "icon": "icon.png",
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": ["x64"]
-        }
-      ]
-    },
-    "files": [
-      "**/*",
-      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
-      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
-      "!**/node_modules/*.d.ts",
-      "!**/node_modules/.bin",
-      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-      "!.editorconfig",
-      "!**/._*",
-      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
-      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
-      "!**/{appveyor.yml,.travis.yml,circle.yml}",
-      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
-      "!**/node_modules/puppeteer/**/*"
-    ],
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "artifactName": "${productName}-Setup-${version}.${ext}"
-    }
   }
 }

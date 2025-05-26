@@ -55,13 +55,8 @@ jobs:
         run: npm run build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Completely disable code signing
-          CSC_IDENTITY_AUTO_DISCOVERY: false
           PHANTOMJS_CDNURL: https://github.com/Medium/phantomjs/releases/download/v2.1.1
-          # Use virtual display for Linux
           DISPLAY: ${{ matrix.os == 'ubuntu-latest' && ':99' || '' }}
-          # Disable update checks and signing verification
-          ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
 
       - name: Upload macOS artifacts
         if: matrix.os == 'macos-latest'

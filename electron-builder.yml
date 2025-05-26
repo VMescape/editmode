@@ -1,0 +1,61 @@
+appId: com.editmode.app
+productName: EditMode
+directories:
+  output: dist
+
+forceCodeSigning: false
+
+publish:
+  - provider: github
+    owner: VMescape
+    repo: editmode
+
+mac:
+  identity: null
+  icon: icon.png
+  category: public.app-category.productivity
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  extendInfo:
+    CFBundleDocumentTypes:
+      - CFBundleTypeExtensions: [docx, xlsx]
+        CFBundleTypeName: Microsoft Office Document
+        CFBundleTypeRole: Editor
+        LSHandlerRank: Alternate
+
+win:
+  icon: icon.png
+  target:
+    - target: nsis
+      arch: [x64]
+  verifyUpdateCodeSignature: false
+  requestedExecutionLevel: asInvoker
+
+linux:
+  icon: icon.png
+  target:
+    - target: AppImage
+      arch: [x64]
+
+files:
+  - "**/*"
+  - "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}"
+  - "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}"
+  - "!**/node_modules/*.d.ts"
+  - "!**/node_modules/.bin"
+  - "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}"
+  - "!.editorconfig"
+  - "!**/._*"
+  - "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}"
+  - "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}"
+  - "!**/{appveyor.yml,.travis.yml,circle.yml}"
+  - "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+  - "!**/node_modules/puppeteer/**/*"
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  artifactName: "${productName}-Setup-${version}.${ext}" 

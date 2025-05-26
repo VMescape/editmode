@@ -131,7 +131,6 @@ async function generatePDF(content, outputPath) {
       timeout: 30000, // 30 second timeout
       renderDelay: 100, // Wait for dynamic content
       quality: 100, // High quality
-      phantomPath: require('phantomjs-prebuilt').path, // Use phantomjs-prebuilt for better performance
       // Add better error handling
       error: (error) => {
         console.error('PDF generation error:', error);

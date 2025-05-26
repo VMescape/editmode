@@ -22,17 +22,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Use Node 20 for better compatibility
+          node-version: '18' # Back to Node 18 for stability
           cache: 'npm'
           
       - name: Install system dependencies (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libnss3-dev libatk-bridge2.0-dev libdrm2-dev libxcomposite-dev libxdamage-dev libxrandr-dev libgbm-dev libxss-dev libasound2-dev
+          sudo apt-get install -y libnss3-dev libatk-bridge2.0-dev libdrm2-dev libxcomposite-dev libxdamage-dev libxrandr-dev libgbm-dev libxss-dev libasound2-dev libgtk-3-dev
           
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install --legacy-peer-deps
         
       - name: Build app
         run: npm run build
@@ -46,6 +47,8 @@ jobs:
           # Windows signing
           WIN_CSC_LINK: ""
           WIN_CSC_KEY_PASSWORD: ""
+          # Disable update checks
+          ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
           
       - name: Upload artifacts (macOS)
         if: matrix.os == 'macos-latest'
